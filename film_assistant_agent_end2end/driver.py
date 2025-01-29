@@ -39,6 +39,14 @@
 # Log the model to MLflow
 import os
 import mlflow
+from mlflow.models.resources import (
+    DatabricksVectorSearchIndex,
+    DatabricksServingEndpoint,
+    DatabricksSQLWarehouse,
+    DatabricksFunction,
+    DatabricksGenieSpace,
+    DatabricksTable,
+)
 
 input_example = {
     "messages": [
@@ -66,6 +74,9 @@ with mlflow.start_run():
         model_config="config.yml",
         artifact_path='agent',
         input_example=input_example,
+        resources=[
+        DatabricksVectorSearchIndex(index_name="kyra_wulffert.default.wikipedia_vector_index"),
+        ]
     )
 
 # COMMAND ----------
@@ -91,6 +102,11 @@ eval_examples = [
 ]
 eval_dataset = pd.DataFrame(eval_examples)
 
+
+
+eval_dataset = pd.DataFrame(eval_examples)
+display(eval_dataset)
+
 # COMMAND ----------
 
 import mlflow
@@ -105,6 +121,37 @@ with mlflow.start_run(run_id=logged_agent_info.run_id):
 
 # Review the evaluation results in the MLFLow UI (see console output), or access them in place:
 display(eval_results.tables['eval_results'])
+
+# COMMAND ----------
+
+eval_examples = [
+    {
+        "request": {
+            "messages": [
+                {"role": "user", "content": "Find movies that address societal issues like racism or income inequality."}
+            ]
+        },
+        "expected_response": "Louisiana 1933 - The Morgans (Cicely Tyson, Paul Winfield, Kevin Hooks)..."
+    }
+]
+eval_dataset = pd.DataFrame(eval_examples)
+
+
+# COMMAND ----------
+
+import mlflow
+import pandas as pd
+
+with mlflow.start_run(run_id=logged_agent_info.run_id):
+    eval_results = mlflow.evaluate(
+        f"runs:/{logged_agent_info.run_id}/agent",  # replace `chain` with artifact_path that you used when calling log_model.
+        data=eval_dataset,  # Your evaluation dataset
+        model_type="databricks-agent",  # Enable Mosaic AI Agent Evaluation
+    )
+
+# Review the evaluation results in the MLFLow UI (see console output), or access them in place:
+display(eval_results.tables['eval_results'])
+
 
 # COMMAND ----------
 

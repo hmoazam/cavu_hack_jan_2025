@@ -29,6 +29,10 @@
 
 # COMMAND ----------
 
+# MAGIC %pip show databricks_langchain
+
+# COMMAND ----------
+
 # %run ../00_config
 
 # COMMAND ----------

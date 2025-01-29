@@ -134,7 +134,7 @@ spark.sql(f"ALTER TABLE {CHUNKED_DELTA_TABLE} SET TBLPROPERTIES (delta.enableCha
 # COMMAND ----------
 
 VECTOR_INDEX_NAME = f"{UC_CATALOG}.{UC_SCHEMA}.{TABLE_NAME}_vector_index"
-EMBEDDING_MODEL_NAME="databricks-gte-large-en"
+# EMBEDDING_MODEL_NAME="databricks-gte-large-en"
 
 # COMMAND ----------
 
